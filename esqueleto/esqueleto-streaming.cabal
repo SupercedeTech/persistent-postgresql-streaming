@@ -1,7 +1,13 @@
 name:                esqueleto-streaming
 version:             0.1.0.0
--- synopsis:
--- description:
+synopsis:            Memory-constant streaming of Esqueleto results from PostgreSQL
+description:
+  This library provides a set of APIs for performing queries in Esqueleto
+  in constant memory, streaming the results using @conduit@.
+  .
+  The library relies on PostgreSQL-specific features to avoid loading all the
+  results of a query into memory at once. This allows for accessing results of
+  millions of rows from Haskell without a memory blow-up.
 homepage:            https://github.com/SupercedeTech/persistent-postgresql-streaming#readme
 license:             BSD3
 license-file:        LICENSE
