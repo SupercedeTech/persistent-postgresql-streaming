@@ -6,7 +6,7 @@ This code makes use of the PostgreSQL-only [cursors](https://www.postgresql.org/
 
 ## Building these libraries
 
-At the time of writing, these libraries depend on these [two](https://github.com/yesodweb/persistent/pulls/1316) [PRs](https://github.com/yesodweb/persistent/pull/1317) to expose some useful Persistent internals. Those PRs provide as-yet-unreleased versions of `peristent` and `persistent-postgresql`, which you will need to build these streaming libraries.
+At the time of writing, these libraries depend on as-yet-unreleased versions of `persistent` and `persistent-postgresql`, which you will need to build these streaming libraries. These versions are `2.13.2.0` and `2.13.2.0` (not a typo, they're the same.)
 
 The `stack.yaml` file already specifies that the project should use the unreleased versions - but if you're not using Stack, you'll have to incorporate them into your build system yourself.
 
