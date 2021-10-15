@@ -6,9 +6,9 @@ This code makes use of the PostgreSQL-only [cursors](https://www.postgresql.org/
 
 ## Building these libraries
 
-At the time of writing, these libraries depend on as-yet-unreleased versions of `persistent` and `persistent-postgresql`, which you will need to build these streaming libraries. These versions are `2.13.2.0` and `2.13.2.0` (not a typo, they're the same.)
+At the time of writing, these libraries depend on just-released versions of `persistent` and `persistent-postgresql`, which you will need to build these streaming libraries. These versions are `2.13.2.1` and `2.13.2.1` (not a typo, they're the same.)
 
-The `stack.yaml` file already specifies that the project should use the unreleased versions - but if you're not using Stack, you'll have to incorporate them into your build system yourself.
+The `stack.yaml` file already specifies that the project should use those versions - but if you're not using Stack, you'll have to incorporate them into your build system yourself.
 
 ## Using these libraries
 
