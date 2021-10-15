@@ -7,14 +7,18 @@ module Database.Persist.Postgresql.Streaming
   ( selectStream
   ) where
 
-import Control.Monad.Reader.Class
-import Control.Monad.Trans.Class
-import Control.Monad.Trans.Resource
-import Data.Conduit
-import Data.Conduit.Lift
+import Control.Monad.Reader.Class (MonadReader(ask))
+import Control.Monad.Trans.Class (lift)
+import Control.Monad.Trans.Resource (MonadResource)
+import Data.Conduit (ConduitT)
+import Data.Conduit.Lift (runReaderC)
 import Data.Foldable (toList)
 import Database.Persist.Sql.Types.Internal (SqlBackend(..))
 import Database.Persist.Sql.Util
+  ( commaSeparated
+  , keyAndEntityColumnNames
+  , parseEntityValues
+  )
 import Database.Persist.Postgresql
 import Database.Persist.Postgresql.Streaming.Internal
 

@@ -5,11 +5,11 @@ module Database.Esqueleto.PostgreSQL.Streaming
   ( selectCursor
   ) where
 
-import Control.Monad.IO.Class
-import Control.Monad.Trans.Class
+import Control.Monad.IO.Class (MonadIO)
+import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Reader (ReaderT(..), ask)
 import Control.Monad.Trans.Resource (MonadResource)
-import Data.Conduit
+import Data.Conduit (ConduitT)
 import Data.Conduit.Lift (runReaderC)
 import Database.Esqueleto.Internal.Internal
 import Database.Persist.Postgresql

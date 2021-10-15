@@ -7,18 +7,18 @@ module Database.Persist.Postgresql.Streaming.Internal
   ( rawSelectStream
   ) where
 
-import           Control.Exception
-import           Control.Monad.IO.Class
+import           Control.Exception (throwIO)
+import           Control.Monad.IO.Class (MonadIO(liftIO))
 import           Control.Monad.Logger (LoggingT(..), logDebugNS)
-import           Control.Monad.Reader.Class
-import           Control.Monad.Trans.Class
+import           Control.Monad.Reader.Class (MonadReader(ask))
+import           Control.Monad.Trans.Class (lift)
 import           Control.Monad.Trans.Reader (ReaderT(..))
 import           Control.Monad.Trans.Resource (MonadResource, release)
-import           Data.Acquire
-import           Data.Conduit
-import qualified Data.Conduit.List as CL
-import qualified Data.Text as T
-import qualified Data.Text.Encoding as T
+import           Data.Acquire (Acquire, allocateAcquire, mkAcquire)
+import           Data.Conduit (ConduitT, (.|))
+import qualified Data.Conduit.Combinators as CC (mapM, yieldMany)
+import qualified Data.Text as T (Text, append, pack)
+import qualified Data.Text.Encoding as T (encodeUtf8)
 import           Database.Persist.Sql.Types.Internal (SqlBackend(..))
 import           Database.Persist.Postgresql
 import           Database.Persist.Postgresql.Internal
@@ -41,7 +41,7 @@ rawSelectStream
 rawSelectStream parseRes query vals = do
   srcRes <- lift $ liftPersist $ do
     srcRes <- rawQueryResFromCursor query vals
-    return $ fmap (.| CL.mapM parse) srcRes
+    return $ fmap (.| CC.mapM parse) srcRes
   (releaseKey, src) <- allocateAcquire srcRes
   src
   release releaseKey
@@ -86,6 +86,6 @@ withCursorStmt conn query vals =
       -- 256 is the default chunk size used for fetching
       rows <- liftIO $ PGC.foldForward cursor 256 processRow []
       case rows of
-        Left final -> CL.sourceList final
-        Right nonfinal -> CL.sourceList nonfinal >> go
+        Left final -> CC.yieldMany final
+        Right nonfinal -> CC.yieldMany nonfinal >> go
   processRow s row = pure $ s <> [map unP row]
