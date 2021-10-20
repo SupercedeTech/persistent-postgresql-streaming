@@ -12,9 +12,9 @@ homepage:            https://github.com/SupercedeTech/persistent-postgresql-stre
 license:             BSD3
 license-file:        LICENSE
 author:              Isaac van Bakel
-maintainer:          isaac@supercede.com
-copyright:           MIT
-category:            Web
+maintainer:          support@supercede.com
+copyright:           (c) 2021 Supercede Ltd.
+category:            Conduit, Database
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
