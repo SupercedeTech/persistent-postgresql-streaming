@@ -1,10 +1,15 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Database.Esqueleto.PostgreSQL.Streaming
   ( selectCursor
   ) where
 
+import Data.Text (Text)
+import Data.Proxy (Proxy(..))
 import Control.Monad.IO.Class (MonadIO)
 import Control.Monad.Trans.Class (lift)
 import Control.Monad.Trans.Reader (ReaderT(..), ask)
@@ -31,7 +36,7 @@ import Database.Persist.Postgresql.Streaming.Internal (rawSelectStream)
 --
 -- for more.
 selectCursor
-  ::
+  :: forall a r m backend.
     ( SqlSelect a r
     , MonadIO m
     , MonadResource m
@@ -44,5 +49,21 @@ selectCursor query = do
   let (queryTextBuilder, vals) = toRawSql SELECT (conn, initialIdentState) query
       queryText = builderToText queryTextBuilder
   runReaderC backend
-    (rawSelectStream sqlSelectProcessRow queryText vals)
+    (rawSelectStream (sqlSelectProcessRow' (Proxy :: Proxy a)) queryText vals)
+
+#if MIN_VERSION_esqueleto(4,0,0)
+sqlSelectProcessRow'
+  :: (SqlSelect a result)
+  => Proxy a
+  -> [PersistValue]
+  -> Either Text result
+sqlSelectProcessRow' = sqlSelectProcessRow
+#else
+sqlSelectProcessRow'
+  :: (SqlSelect a result)
+  => Proxy a
+  -> [PersistValue]
+  -> Either Text result
+sqlSelectProcessRow' _ = sqlSelectProcessRow
+#endif
 
